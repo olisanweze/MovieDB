@@ -1,0 +1,19 @@
+﻿@model MovieDB.Models.MoviePlayList
+
+@{
+    ViewData["Title"] = "Delete a Movie Playlist";
+}
+
+<h2>Are you sure to delete this movie playlist?</h2>
+
+<div>
+    <p>Movie name: @Model.MovieName</p>
+</div>
+
+@using (Html.BeginForm("Delete", "MoviePlayList", FormMethod.Post))
+{
+    @Html.HiddenFor(m => m.PlayListId)
+    @Html.HiddenFor(m => m.MovieId)
+    <button type = "submit" class="btn btn-primary">Delete</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+}

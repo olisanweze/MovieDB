@@ -1,0 +1,21 @@
+﻿@model MovieDB.Models.MoviePlayList
+
+@{
+    ViewData["Title"] = "Create a Movie Playlist";
+}
+
+<h2>Create a Movie Playlist</h2>
+
+@using (Html.BeginForm())
+{
+    <div>
+        @Html.LabelFor(m => m.MovieName)
+        @Html.TextBoxFor(m => m.MovieName)
+        @Html.ValidationMessageFor(m => m.MovieName, "", new { @class = "text-danger " })
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

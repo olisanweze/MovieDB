@@ -1,0 +1,34 @@
+﻿@model IEnumerable<MovieDB.Models.MoviePlayList>
+
+@{
+    ViewData["Title"] = "Movie Playlists";
+}
+
+<h2>Movie Playlists</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Play List Id</th>
+            <th>Movie Id</th>
+            <th>Movie Name</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var moviePlayList in Model)
+        {
+            <tr>
+                <td>@moviePlayList.PlayListId</td>
+                <td>@moviePlayList.MovieId</td>
+                <td>@moviePlayList.MovieName</td>
+                <td>
+                    <a class="btn btn-primary" href="@Url.Action("Update", new { playListId = moviePlayList.PlayListId, movieId = moviePlayList.MovieId })">Update</a>
+                    <a class="btn btn-secondary" href="@Url.Action("Delete", new { playListId = moviePlayList.PlayListId, movieId = moviePlayList.MovieId })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-success" href="@Url.Action("Create")">Create New Movie Playlist</a>
