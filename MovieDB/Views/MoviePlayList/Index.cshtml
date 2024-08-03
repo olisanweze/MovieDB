@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MovieDB.Models.MoviePlayList>
+﻿@model IEnumerable<MovieDB.Models.PlayList>
 
 @{
     ViewData["Title"] = "Movie Playlists";
@@ -10,8 +10,7 @@
     <thead>
         <tr>
             <th>Play List Id</th>
-            <th>Movie Id</th>
-            <th>Movie Name</th>
+            <th>PlayList Name</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -20,11 +19,10 @@
         {
             <tr>
                 <td>@moviePlayList.PlayListId</td>
-                <td>@moviePlayList.MovieId</td>
-                <td>@moviePlayList.MovieName</td>
+                <td>@moviePlayList.PlayListName</td>
                 <td>
-                    <a class="btn btn-primary" href="@Url.Action("Update", new { playListId = moviePlayList.PlayListId, movieId = moviePlayList.MovieId })">Update</a>
-                    <a class="btn btn-secondary" href="@Url.Action("Delete", new { playListId = moviePlayList.PlayListId, movieId = moviePlayList.MovieId })">Delete</a>
+                    <a class="btn btn-primary" href="@Url.Action("Update", new { playListId = moviePlayList.PlayListId })">Update</a>
+                    <a class="btn btn-secondary" href="@Url.Action("Delete", new { playListId = moviePlayList.PlayListId })">Delete</a>
                 </td>
             </tr>
         }

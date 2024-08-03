@@ -1,17 +1,17 @@
-﻿@model MovieDB.Models.MoviePlayList
+﻿@model MovieDB.Models.PlayList
 
 @{
-    ViewData["Title"] = "Create a Movie Playlist";
+    ViewData["Title"] = "Create a Playlist";
 }
 
-<h2>Create a Movie Playlist</h2>
+<h2>Create a Playlist</h2>
 
 @using (Html.BeginForm())
 {
     <div>
-        @Html.LabelFor(m => m.MovieName)
-        @Html.TextBoxFor(m => m.MovieName)
-        @Html.ValidationMessageFor(m => m.MovieName, "", new { @class = "text-danger " })
+        @Html.LabelFor(m => m.PlayListName)
+        @Html.TextBoxFor(m => m.PlayListName)
+        @Html.ValidationMessageFor(m => m.PlayListName, "", new { @class = "text-danger " })
     </div>
     <button type="submit" class="btn btn-primary">Create</button>
 }

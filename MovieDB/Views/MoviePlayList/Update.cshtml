@@ -1,4 +1,4 @@
-﻿@model MovieDB.Models.MoviePlayList
+﻿@model MovieDB.Models.PlayList
 
 @{
     ViewData["Title"] = "Update Movie Playlist";
@@ -7,12 +7,11 @@
 @using (Html.BeginForm())
 {
     @Html.HiddenFor(m => m.PlayListId)
-    @Html.HiddenFor(m => m.MovieId)
 
     <div>
-        @Html.LabelFor(m => m.MovieName)
-        @Html.TextBoxFor(m => m.MovieName)
-        @Html.ValidationMessageFor(m => m.MovieName, "", new { @class = "text-danger" })
+        @Html.LabelFor(m => m.PlayListName)
+        @Html.TextBoxFor(m => m.PlayListName)
+        @Html.ValidationMessageFor(m => m.PlayListName, "", new { @class = "text-danger" })
     </div>
     <button type="submit" class="btn btn-primary">Update</button>
 }
