@@ -12,6 +12,29 @@ namespace MovieDB.Controllers
     {
         private readonly MoviePlayListService _moviePlayListService;
         private readonly PlayListService _playListService;
+        List<Movie> movies = new List<Movie>{ new Movie {
+            Title = "Movie Title",
+            Year = 2023,
+            Genre = "Drama",
+            Rating = 8.5,
+            MovieId = 1,
+            Director = "Director Name",
+            Actors = "Actor Names",
+            Plot = "Movie Plot",
+            Poster = "http://example.com/poster.jpg"
+            },
+            new Movie {
+            Title = "Movie Title 1",
+            Year = 2024,
+            Genre = "Drama - 1",
+            Rating = 8.0,
+             MovieId = 2,
+            Director = "Director Name 1",
+            Actors = "Actor Names 1",
+            Plot = "Movie Plot 1",
+            Poster = "http://example.com/poster1.jpg"
+            }
+            };
 
         public MoviePlayListController (PlayListService playListService, MoviePlayListService moviePlayListService)
         {
@@ -27,18 +50,34 @@ namespace MovieDB.Controllers
 
         public IActionResult Create()
         {
+            
+            ViewData["movies"] = movies;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(PlayList playList)
+        public async Task<IActionResult> Create(PlayList playList, int[] selectedMovieIds)
         {
             if (ModelState.IsValid)
             {
                 _playListService.AddPlayList(playList);
+
+                foreach (var movieId in selectedMovieIds)
+                {
+                    var movie = movies.FirstOrDefault(m => m.MovieId == movieId);
+                    var moviePlayList = new MoviePlayList
+                    {
+                        PlayListId = playList.PlayListId,
+                        MovieId = movieId,
+                        MovieName = movie.Title
+                    };
+
+                    _moviePlayListService.AddMoviePlayList(moviePlayList);
+                }
+
                 return RedirectToAction("Index");
             }
-            
+
             return View(playList);
         }
 
