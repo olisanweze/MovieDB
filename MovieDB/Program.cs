@@ -14,6 +14,7 @@ namespace MovieDB
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpClient();
 
             //register DbContext
             builder.Services.AddDbContext<MovieDBContext>(options =>

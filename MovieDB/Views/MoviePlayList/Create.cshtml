@@ -19,8 +19,8 @@
     @foreach (var movie in moviesList)
     {
         <div>
-            <input type="checkbox" name="selectedMovieIds" value="@movie.MovieId" />
-            @movie.Title
+            <input type="checkbox" name="selectedMovieIds" value="@movie.movieID" />
+            @movie.title
         </div>
     }
 

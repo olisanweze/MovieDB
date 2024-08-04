@@ -21,8 +21,8 @@
     @foreach (var movie in moviesList)
     {
         <div>
-            <input type="checkbox" name="selectedMovieIds" value="@movie.MovieId" @(moviesInPlayList.Contains(movie.MovieId) ? "checked" : "") />
-            @movie.Title
+            <input type="checkbox" name="selectedMovieIds" value="@movie.movieID" @(moviesInPlayList.Contains(movie.movieID) ? "checked" : "") />
+            @movie.title
         </div>
     }
     <button type="submit" class="btn btn-primary">Update</button>

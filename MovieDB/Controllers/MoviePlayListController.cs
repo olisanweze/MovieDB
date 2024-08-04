@@ -12,35 +12,13 @@ namespace MovieDB.Controllers
     {
         private readonly MoviePlayListService _moviePlayListService;
         private readonly PlayListService _playListService;
+        private readonly MovieService _movieService;
 
-        List<Movie> movies = new List<Movie>{ new Movie {
-            Title = "Movie Title",
-            Year = 2023,
-            Genre = "Drama",
-            Rating = 8.5,
-            MovieId = 1,
-            Director = "Director Name",
-            Actors = "Actor Names",
-            Plot = "Movie Plot",
-            Poster = "http://example.com/poster.jpg"
-            },
-            new Movie {
-            Title = "Movie Title 1",
-            Year = 2024,
-            Genre = "Drama - 1",
-            Rating = 8.0,
-            MovieId = 2,
-            Director = "Director Name 1",
-            Actors = "Actor Names 1",
-            Plot = "Movie Plot 1",
-            Poster = "http://example.com/poster1.jpg"
-            }
-            };
-
-        public MoviePlayListController (PlayListService playListService, MoviePlayListService moviePlayListService)
+        public MoviePlayListController (PlayListService playListService, MoviePlayListService moviePlayListService, MovieService movieService)
         {
             _playListService = playListService;
             _moviePlayListService = moviePlayListService;
+            _movieService = movieService;
         }
 
         public async Task<IActionResult> Index()
@@ -52,7 +30,7 @@ namespace MovieDB.Controllers
         public IActionResult Create()
         {
             
-            ViewData["movies"] = movies;
+            ViewData["movies"] = _movieService.GetMovies();
             return View();
         }
 
@@ -62,15 +40,16 @@ namespace MovieDB.Controllers
             if (ModelState.IsValid)
             {
                 _playListService.AddPlayList(playList);
+                var movies = _movieService.GetMovies();
 
                 foreach (var movieId in selectedMovieIds)
                 {
-                    var movie = movies.FirstOrDefault(m => m.MovieId == movieId);
+                    var movie = movies.FirstOrDefault(m => m.movieID == movieId);
                     var moviePlayList = new MoviePlayList
                     {
                         PlayListId = playList.PlayListId,
                         MovieId = movieId,
-                        MovieName = movie.Title
+                        MovieName = movie.title
                     };
 
                     _moviePlayListService.AddMoviePlayList(moviePlayList);
@@ -86,6 +65,7 @@ namespace MovieDB.Controllers
         {
             var playList = _playListService.GetPlayList(playListId);
             var moviesInPlayList = _moviePlayListService.GetMoviePlayListsByPlayListId(playListId).Select(m => m.MovieId).ToList();
+            var movies = _movieService.GetMovies();
 
             if (playList == null)
             {
@@ -107,15 +87,16 @@ namespace MovieDB.Controllers
                 
                 var movieListCreate = selectedMovieIds.Except(moviesInPlayList).ToList();
                 var movieListDelete = moviesInPlayList.Except(selectedMovieIds).ToList();
+                var movies = _movieService.GetMovies();
 
                 foreach (var movieId in movieListCreate)
                 {
-                    var movie = movies.FirstOrDefault(m => m.MovieId == movieId);
+                    var movie = movies.FirstOrDefault(m => m.movieID == movieId);
                     var moviePlayList = new MoviePlayList
                     {
                         PlayListId = playList.PlayListId,
                         MovieId = movieId,
-                        MovieName = movie.Title
+                        MovieName = movie.title
                     };
 
                     _moviePlayListService.AddMoviePlayList(moviePlayList);
