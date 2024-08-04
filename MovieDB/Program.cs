@@ -29,6 +29,9 @@ namespace MovieDB
             builder.Services.AddScoped<MoviePlayListDAL>();
             builder.Services.AddScoped<PlayListService>();
             builder.Services.AddScoped<PlayListDAL>();
+            //register DAL and BLL services
+            builder.Services.AddScoped<MovieDAL>();
+            builder.Services.AddScoped<MovieService>();
 
             var app = builder.Build();
 
@@ -44,9 +47,12 @@ namespace MovieDB
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseAuthentication();
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapRazorPages();
 
             app.MapControllerRoute(
                 name: "default",
@@ -54,6 +60,11 @@ namespace MovieDB
             app.MapRazorPages();
 
             app.Run();
+        }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddHttpClient();
         }
     }
 }
