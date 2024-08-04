@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Movie>
+
+@{
+    ViewData["Title"] = "Movies";
+}
+
+<h2>Movies</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Movie ID</th>
+            <th>Name</th>
+            <th>Year</th>
+            <th>Rating</th>
+            <th>Plot</th>
+            <th>Poster</th>
+        </tr>
+    </thead>
+    <tbody id="movieList">
+        @foreach (var movie in Model)
+        {
+            <tr>
+                <td>@movie.movieID</td>
+                <td>@movie.title</td>
+                <td>@movie.year</td>
+                <td>@movie.plot</td>
+                <td>@movie.poster</td>
+                <td>
+                    <a class="btn btn-danger" href="@Url.Action("ConfirmDelete", new { id = movie.movieID })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form asp-controller="Movie" asp-action="Create" method="post">
+    <input class="btn btn-success" value="Add new movie" type="submit" />
+</form>
