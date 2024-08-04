@@ -16,9 +16,14 @@ namespace MovieDB.DAL
             return _context.MoviePlayLists.ToList();
         }
 
-        public MoviePlayList GetMoviePlayList(int id)
+        public MoviePlayList GetMoviePlayList(int id, int movieId)
         {
-            return _context.MoviePlayLists.Find(id);
+            return _context.MoviePlayLists.Find(id, movieId);
+        }
+
+        public List<MoviePlayList> GetMoviePlayListsByPlayListId(int playListId)
+        {
+            return _context.MoviePlayLists.Where(mpl => mpl.PlayListId == playListId).ToList();
         }
 
         public void AddMoviePlayList(MoviePlayList movieplaylist)
@@ -33,9 +38,23 @@ namespace MovieDB.DAL
             _context.SaveChanges();
         }
 
-        public void DeleteMoviePlayList(int id)
+        public void DeleteMoviePlayList(int playListId)
         {
-            var movieplaylist = _context.MoviePlayLists.Find(id);
+            var moviePlayList = GetMoviePlayListsByPlayListId(playListId);
+          
+            foreach(var movie in moviePlayList)
+            {
+                _context.MoviePlayLists.Remove(movie);
+                _context.SaveChanges();
+            }
+            
+        }
+
+        public void DeleteMoviePlayListByIds(int playListId, int movieId)
+        {
+            var movieplaylist = _context.MoviePlayLists
+                .FirstOrDefault(mpl => mpl.PlayListId == playListId && mpl.MovieId == movieId);
+
             if (movieplaylist != null)
             {
                 _context.MoviePlayLists.Remove(movieplaylist);

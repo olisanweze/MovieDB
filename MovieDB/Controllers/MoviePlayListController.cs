@@ -12,6 +12,7 @@ namespace MovieDB.Controllers
     {
         private readonly MoviePlayListService _moviePlayListService;
         private readonly PlayListService _playListService;
+
         List<Movie> movies = new List<Movie>{ new Movie {
             Title = "Movie Title",
             Year = 2023,
@@ -28,7 +29,7 @@ namespace MovieDB.Controllers
             Year = 2024,
             Genre = "Drama - 1",
             Rating = 8.0,
-             MovieId = 2,
+            MovieId = 2,
             Director = "Director Name 1",
             Actors = "Actor Names 1",
             Plot = "Movie Plot 1",
@@ -83,16 +84,49 @@ namespace MovieDB.Controllers
 
         public async Task<IActionResult> Update(int playListId)
         {
-            var moviePlayList =  _playListService.GetPlayList(playListId);
-            return View(moviePlayList);
+            var playList = _playListService.GetPlayList(playListId);
+            var moviesInPlayList = _moviePlayListService.GetMoviePlayListsByPlayListId(playListId).Select(m => m.MovieId).ToList();
+
+            if (playList == null)
+            {
+                return NotFound();
+            }
+            ViewData["movies"] = movies;
+            ViewData["moviesInPlayList"] = moviesInPlayList;
+            return View(playList);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(PlayList playList)
+        public async Task<IActionResult> Update(PlayList playList, int[] selectedMovieIds)
         {
             if (ModelState.IsValid)
             {
                 _playListService.UpdatePlayList(playList);
+
+                var moviesInPlayList = _moviePlayListService.GetMoviePlayListsByPlayListId(playList.PlayListId).Select(m => m.MovieId).ToList();
+                
+                var movieListCreate = selectedMovieIds.Except(moviesInPlayList).ToList();
+                var movieListDelete = moviesInPlayList.Except(selectedMovieIds).ToList();
+
+                foreach (var movieId in movieListCreate)
+                {
+                    var movie = movies.FirstOrDefault(m => m.MovieId == movieId);
+                    var moviePlayList = new MoviePlayList
+                    {
+                        PlayListId = playList.PlayListId,
+                        MovieId = movieId,
+                        MovieName = movie.Title
+                    };
+
+                    _moviePlayListService.AddMoviePlayList(moviePlayList);
+                }
+
+                foreach (var movieId in movieListDelete)
+                {
+                    _moviePlayListService.DeleteMoviePlayListByIds(playList.PlayListId, movieId);
+                }
+
+
                 return RedirectToAction("Index");
             }
             return View(playList);
@@ -108,6 +142,7 @@ namespace MovieDB.Controllers
         public async Task<IActionResult> DeleteConfirmed(int playListId)
         {
             _playListService.DeletePlayList(playListId);
+            _moviePlayListService.DeleteMoviePlayList(playListId);
             return RedirectToAction("Index");
         }
     }

@@ -1,4 +1,5 @@
-﻿using MovieDB.DAL;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieDB.DAL;
 using MovieDB.Models;
 
 namespace MovieDB.BLL
@@ -17,9 +18,14 @@ namespace MovieDB.BLL
             return _movieplaylistDAL.GetMoviePlayLists();
         }
 
-        public MoviePlayList GetMoviePlayList(int id)
+        public MoviePlayList GetMoviePlayList(int id, int movieId)
         {
-            return _movieplaylistDAL.GetMoviePlayList(id);
+            return _movieplaylistDAL.GetMoviePlayList(id, movieId);
+        }
+
+        public List<MoviePlayList> GetMoviePlayListsByPlayListId(int playListId)
+        {
+            return _movieplaylistDAL.GetMoviePlayListsByPlayListId(playListId);
         }
 
         public void AddMoviePlayList(MoviePlayList movieplaylist)
@@ -35,6 +41,11 @@ namespace MovieDB.BLL
         public void DeleteMoviePlayList(int id)
         {
             _movieplaylistDAL.DeleteMoviePlayList(id);
+        }
+
+        public void DeleteMoviePlayListByIds(int playListId, int movieId)
+        {
+            _movieplaylistDAL.DeleteMoviePlayListByIds(playListId, movieId);
         }
     }
 }

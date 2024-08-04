@@ -19,12 +19,16 @@ namespace MovieDB
             builder.Services.AddDbContext<MovieDBContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Register MoviePlayListService and MoviePlayListDAL
+            //add identity service
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<MovieDBContext>()
+                .AddDefaultUI();
+
+            // Register MoviePlayListBLL and MoviePlayListDAL
             builder.Services.AddScoped<MoviePlayListService>();
             builder.Services.AddScoped<MoviePlayListDAL>();
             builder.Services.AddScoped<PlayListService>();
             builder.Services.AddScoped<PlayListDAL>();
-
 
             var app = builder.Build();
 
@@ -33,19 +37,21 @@ namespace MovieDB
             {
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                // app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=MoviePlayList}/{action=Create}/{id?}");
+            app.MapRazorPages();
 
             app.Run();
         }
