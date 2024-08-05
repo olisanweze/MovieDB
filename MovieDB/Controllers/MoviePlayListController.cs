@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieDB.BLL;
 using MovieDB.DAL;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace MovieDB.Controllers
 {
+    [Authorize]
     public class MoviePlayListController : Controller
     {
         private readonly MoviePlayListService _moviePlayListService;
@@ -23,6 +25,7 @@ namespace MovieDB.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             var playLists = _playListService.GetPlayLists();
             return View(playLists);
         }
@@ -126,5 +129,21 @@ namespace MovieDB.Controllers
             _moviePlayListService.DeleteMoviePlayList(playListId);
             return RedirectToAction("Index");
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost, ActionName("DeleteAll")]
+        public async Task<IActionResult> DeleteAllConfirmed()
+        {
+            _moviePlayListService.DeleteAllMoviePlayLists();
+            _playListService.DeleteAllPlayLists();
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> DeleteAll()
+        {
+            return View();
+        }
+
     }
 }

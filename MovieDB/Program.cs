@@ -22,6 +22,7 @@ namespace MovieDB
 
             //add identity service
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<MovieDBContext>()
                 .AddDefaultUI();
 
@@ -35,6 +36,9 @@ namespace MovieDB
             builder.Services.AddScoped<MovieService>();
 
             var app = builder.Build();
+
+            // Create roles
+            CreateRoles(app).Wait();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -50,7 +54,6 @@ namespace MovieDB
             app.UseRouting();
             app.UseAuthentication();
 
-            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapRazorPages();
@@ -67,5 +70,37 @@ namespace MovieDB
         {
             services.AddHttpClient();
         }
+
+        private static async Task CreateRoles(IHost app)
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+                string[] roleNames = { "Admin", "User" };
+                IdentityResult roleResult;
+
+                foreach (var roleName in roleNames)
+                {
+                    var roleExist = await roleManager.RoleExistsAsync(roleName);
+                    if (!roleExist)
+                    {
+                        roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                    }
+                }
+
+                var adminUser = await userManager.FindByEmailAsync("admin@admin.com");
+                if (adminUser != null)
+                {
+                    var isInAdminRole = await userManager.IsInRoleAsync(adminUser, "Admin");
+                    if (!isInAdminRole)
+                    {
+                        await userManager.AddToRoleAsync(adminUser, "Admin");
+                    }
+                }
+            }
+        }
+
     }
 }

@@ -61,5 +61,12 @@ namespace MovieDB.DAL
                 _context.SaveChanges();
             }
         }
+
+        public void DeleteAllMoviePlayLists()
+        {
+            var moviePlayLists = _context.MoviePlayLists.ToList();
+            _context.MoviePlayLists.RemoveRange(moviePlayLists);
+            _context.SaveChanges();
+        }
     }
 }
