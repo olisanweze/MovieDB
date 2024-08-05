@@ -11,8 +11,8 @@
 *.sln.docstates
 
 # Ignore Entity Framework migration files
-MovieDB.DAL/Migrations/
-MovieDB/appsettings.json
+/MovieDB.DAL/Migrations/
+/MovieDB/appsettings.json
 
 
 # User-specific files (MonoDevelop/Xamarin Studio)
