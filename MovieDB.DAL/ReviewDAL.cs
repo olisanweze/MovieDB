@@ -1,8 +1,10 @@
-﻿using MovieDB.Models;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using MovieDB.Models;
 
 namespace MovieDB.DAL
 {
-    public class ReviewDAL
+    public class ReviewDAL : IdentityDbContext<IdentityUser> // IdentityDbContext<IdentityUser
     {
         private readonly MovieDBContext _context;
 

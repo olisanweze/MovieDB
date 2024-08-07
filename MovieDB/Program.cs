@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MovieDB.DAL;
 namespace MovieDB
 {
     public class Program
@@ -5,6 +8,11 @@ namespace MovieDB
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var connectionString = builder.Configuration.GetConnectionString("MovieDBContextConnection") ?? throw new InvalidOperationException("Connection string 'MovieDBContextConnection' not found.");
+
+            builder.Services.AddDbContext<MovieDBContext>(options => options.UseSqlServer(connectionString));
+
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MovieDBContext>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -19,16 +27,16 @@ namespace MovieDB
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            // Step 4: add identity service
+            //order app.
 
-            app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=home}/{action=Index}/{Id?}");
+            app.MapRazorPages(); // razor pages
 
             app.Run();
         }
