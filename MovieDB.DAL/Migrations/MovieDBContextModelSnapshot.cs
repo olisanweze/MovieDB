@@ -167,10 +167,12 @@ namespace MovieDB.DAL.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -207,10 +209,12 @@ namespace MovieDB.DAL.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -222,24 +226,11 @@ namespace MovieDB.DAL.Migrations
 
             modelBuilder.Entity("MovieDB.Models.Movie", b =>
                 {
-                    b.Property<int>("MovieId")
+                    b.Property<int>("movieID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MovieId"));
-
-                    b.Property<string>("Actors")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Director")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Genre")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("movieID"));
 
                     b.Property<int?>("MoviePlayListMovieId")
                         .HasColumnType("int");
@@ -247,28 +238,28 @@ namespace MovieDB.DAL.Migrations
                     b.Property<int?>("MoviePlayListPlayListId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Plot")
+                    b.Property<string>("plot")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<string>("Poster")
+                    b.Property<string>("poster")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<double>("Rating")
+                    b.Property<double>("rating")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("float")
                         .HasDefaultValue(0.0);
 
-                    b.Property<string>("Title")
+                    b.Property<string>("title")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
-                    b.Property<int>("Year")
+                    b.Property<int>("year")
                         .HasColumnType("int");
 
-                    b.HasKey("MovieId");
+                    b.HasKey("movieID");
 
                     b.HasIndex("MoviePlayListPlayListId", "MoviePlayListMovieId");
 

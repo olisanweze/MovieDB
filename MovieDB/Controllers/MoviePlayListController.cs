@@ -5,6 +5,7 @@ using MovieDB.BLL;
 using MovieDB.DAL;
 using MovieDB.Models;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 
 namespace MovieDB.Controllers

@@ -14,29 +14,58 @@ namespace MovieDB.Controllers
             _reviewService = reviewService;
         }
 
+        public IActionResult Index()
+        {
+            List<Review> reviews = _reviewService.GetReviews();
+            return View(reviews);
+        }
+
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Review review)
+        public IActionResult Create(Review review)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    object value = await _reviewService.AddReviewAsync(review);
-                    return RedirectToAction("Index", "Home");
-                }
-                catch (Exception ex)
-                {
-                    // Log the exception
-                    ModelState.AddModelError(string.Empty, "An error occurred while adding the review.");
-                }
+                _reviewService.AddReview(review);
+                return RedirectToAction("Index");
             }
+            return View(review);
+        }
 
-            // If we got this far, something failed; this will redisplay the form.
+        public IActionResult Delete(int id)
+        {
+            var review = _reviewService.GetReview(id);
+            if (review != null)
+            {
+                _reviewService.DeleteReview(id);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Update(int id)
+        {
+            var review = _reviewService.GetReview(id);
+            if (review == null)
+            {
+                return NotFound();
+            }
+            return View(review);
+        }
+
+        [HttpPost]
+        public IActionResult Update(Review review)
+        {
+            if (ModelState.IsValid)
+            {
+                _reviewService.UpdateReview(review);
+                return RedirectToAction("Index");
+            }
             return View(review);
         }
     }
