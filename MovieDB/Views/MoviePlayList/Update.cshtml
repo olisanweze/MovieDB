@@ -1,0 +1,29 @@
+﻿@model MovieDB.Models.PlayList
+
+@{
+    ViewData["Title"] = "Update Movie Playlist";
+    var moviesList = ViewData["movies"] as List<MovieDB.Models.Movie>;
+    var moviesInPlayList = ViewData["moviesInPlayList"] as List<int>;
+
+}
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(m => m.PlayListId)
+
+    <div>
+        @Html.LabelFor(m => m.PlayListName)
+        @Html.TextBoxFor(m => m.PlayListName)
+        @Html.ValidationMessageFor(m => m.PlayListName, "", new { @class = "text-danger" })
+    </div>
+
+    <h3>Update Movies</h3>
+    @foreach (var movie in moviesList)
+    {
+        <div>
+            <input type="checkbox" name="selectedMovieIds" value="@movie.movieID" @(moviesInPlayList.Contains(movie.movieID) ? "checked" : "") />
+            @movie.title
+        </div>
+    }
+    <button type="submit" class="btn btn-primary">Update</button>
+}

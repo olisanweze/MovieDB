@@ -1,0 +1,33 @@
+﻿@model MovieDB.Models.PlayList
+
+@{
+    ViewData["Title"] = "Create a Playlist";
+    var moviesList = ViewData["movies"] as List<MovieDB.Models.Movie>;
+}
+
+<h2>Create a Playlist</h2>
+
+@using (Html.BeginForm())
+{
+    <div>
+        @Html.LabelFor(m => m.PlayListName)
+        @Html.TextBoxFor(m => m.PlayListName)
+        @Html.ValidationMessageFor(m => m.PlayListName, "", new { @class = "text-danger " })
+    </div>
+
+    <h3>Add Movies</h3>
+    @foreach (var movie in moviesList)
+    {
+        <div>
+            <input type="checkbox" name="selectedMovieIds" value="@movie.movieID" />
+            @movie.title
+        </div>
+    }
+
+
+    <button type="submit" class="btn btn-primary">Create</button>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

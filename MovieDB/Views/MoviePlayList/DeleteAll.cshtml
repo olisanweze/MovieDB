@@ -1,0 +1,16 @@
+﻿@{
+    var isAdmin = User.IsInRole("Admin");
+}
+
+@{
+    ViewData["Title"] = "Delete All the Movie Playlists";
+}
+
+<h2>Are you sure to delete all the movie playlists? All the data will be lost.</h2>
+
+@if (isAdmin)
+{
+    <form asp-action="DeleteAll" method="post">
+        <button type="submit" class="btn btn-danger">Delete All PlayLists</button>
+    </form>
+}
