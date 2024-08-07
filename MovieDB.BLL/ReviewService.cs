@@ -36,5 +36,10 @@ namespace MovieDB.BLL
         {
             _reviewDAL.DeleteReview(id);
         }
+
+        public async Task<object> AddReviewAsync(Review review)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -19,40 +19,27 @@ namespace MovieDB.DAL
 
             //Movie
             modelBuilder.Entity<Movie>()
-                .HasKey(m => m.MovieId);
+                .HasKey(m => m.movieID);
 
             modelBuilder.Entity<Movie>()
-                .Property(m => m.Title)
+                .Property(m => m.title)
                 .IsRequired()
-                .HasMaxLength(200);
-
-            modelBuilder.Entity<Movie>()
-                .Property(m => m.Year)
-                .IsRequired();
-
-            modelBuilder.Entity<Movie>()
-                .Property(m => m.Genre)
-                .IsRequired()
-                .HasMaxLength(200);
-
-            modelBuilder.Entity<Movie>()
-                .Property(m => m.Rating)
-                .HasDefaultValue(0);
-
-            modelBuilder.Entity<Movie>()
-                 .Property(m => m.Director)
-                 .HasMaxLength(200);
-
-            modelBuilder.Entity<Movie>()
-                 .Property(m => m.Actors)
-                 .HasMaxLength(200);
-
-            modelBuilder.Entity<Movie>()
-                .Property(m => m.Plot)
                 .HasMaxLength(2000);
 
             modelBuilder.Entity<Movie>()
-                .Property(m => m.Poster)
+                .Property(m => m.year)
+                .IsRequired();
+
+            modelBuilder.Entity<Movie>()
+                .Property(m => m.rating)
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Movie>()
+                .Property(m => m.plot)
+                .HasMaxLength(2000);
+
+            modelBuilder.Entity<Movie>()
+                .Property(m => m.poster)
                 .HasMaxLength(2000);
 
             //moviePlayList

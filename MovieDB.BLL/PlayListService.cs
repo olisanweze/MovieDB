@@ -36,5 +36,10 @@ namespace MovieDB.BLL
         {
             _playlistDAL.DeletePlayList(id);
         }
+
+        public void DeleteAllPlayLists()
+        {
+            _playlistDAL.DeleteAllPlayLists();
+        }
     }
 }
