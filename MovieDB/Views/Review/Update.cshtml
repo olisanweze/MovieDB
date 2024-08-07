@@ -1,8 +1,8 @@
 ﻿@model MovieDB.Models.Review
 
-<h2>Create Review</h2>
+<h2>Edit Review</h2>
 
-<form asp-action="Create" method="post">
+<form asp-action="Update" method="post">
     <div class="form-group">
         <label asp-for="MovieName"></label>
         <input asp-for="MovieName" class="form-control" />
@@ -23,7 +23,7 @@
         <textarea asp-for="Comment" class="form-control"></textarea>
         <span asp-validation-for="Comment" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Update</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
 

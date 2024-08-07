@@ -2,12 +2,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MovieDB.DAL;
 namespace MovieDB
+
 {
     public class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
             var connectionString = builder.Configuration.GetConnectionString("MovieDBContextConnection") ?? throw new InvalidOperationException("Connection string 'MovieDBContextConnection' not found.");
 
             builder.Services.AddDbContext<MovieDBContext>(options => options.UseSqlServer(connectionString));

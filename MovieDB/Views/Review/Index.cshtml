@@ -1,0 +1,34 @@
+﻿@model IEnumerable<MovieDB.Models.Review>
+
+<h2>Reviews</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Review</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Movie Name</th>
+            <th>User Name</th>
+            <th>Star</th>
+            <th>Comment</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.MovieName</td>
+                <td>@review.UserName</td>
+                <td>@review.Star</td>
+                <td>@review.Comment</td>
+                <td>
+                    <a asp-action="Update" asp-route-id="@review.MovieId" class="btn btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@review.MovieId" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
