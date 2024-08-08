@@ -38,19 +38,13 @@
                             <ul class="dropdown-menu" aria-labelledby="moviePlaylistDropdown">
                                 <li><a class="dropdown-item" asp-area="" asp-controller="MoviePlayList" asp-action="Index">View Playlists</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-controller="MoviePlayList" asp-action="Create">Add New Playlist</a></li>
-                                @if (User.IsInRole("Admin"))
+                                @if (User.IsInRole("ADMIN") || User.IsInRole("Admin"))
                                 {
                                     <li><a class="dropdown-item" asp-area="" asp-controller="MoviePlayList" asp-action="DeleteAll">Delete All PlayLists</a></li>
                                 }
                             </ul>
                         </li>
 
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="MoviePlayList" asp-action="DeleteAll">Delete All PlayLists</a>
-                            </li>
-                        }
                         <!-- Review Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="reviewDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
