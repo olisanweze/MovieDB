@@ -6,13 +6,14 @@
     <title>@ViewData["Title"] - MovieDB</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap">
     <link rel="stylesheet" href="~/MovieDB.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body style="background-color: #00002b; color: #fff">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MovieDB</a>
+                <a style="margin-right:680px" class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MoviePlex</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -26,18 +27,31 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Movie" asp-action="Index">Movies</a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MoviePlayList" asp-action="Index">Show PlayList</a>
+                        <!-- Movie Playlist Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="moviePlaylistDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Movie PlayList
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="moviePlaylistDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="MoviePlayList" asp-action="Index">View Playlists</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="MoviePlayList" asp-action="Create">Add New Playlist</a></li>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="MoviePlayList" asp-action="DeleteAll">Delete All PlayLists</a></li>
+                                }
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MoviePlayList" asp-action="Create">Create PlayList</a>
+
+                        <!-- Registration Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="reviewDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Reviews
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="reviewDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Review" asp-action="Index">View Reviews</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Review" asp-action="Create">Add New Review</a></li>
+                            </ul>
                         </li>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="MoviePlayList" asp-action="DeleteAll">Delete All PlayLists</a>
-                            </li>
-                        }
                         <partial name = "_LoginPartial" />
                     </ul>
 
@@ -54,7 +68,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - MovieDB - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - MoviePlex - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

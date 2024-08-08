@@ -1,5 +1,19 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model MovieDB.Models.Movie
+
 @{
+    ViewData["Title"] = "Delete a Movie";
+}
+
+<h2>Are you sure to delete this movie?</h2>
+
+<div>
+    <h4>@Model.title</h4>
+    <p>@Model.plot</p>
+    <p>@Model.year</p>
+</div>
+
+@using (Html.BeginForm("Delete", "Movie", new { id = Model.movieID }, FormMethod.Post))
+{
+    <button type="submit" class="btn btn-danger">Confirm Delete</button>
+    <a href="/Movie/Index" class="btn btn-secondary">Cancel</a>
 }

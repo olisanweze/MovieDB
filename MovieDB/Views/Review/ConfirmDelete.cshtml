@@ -1,0 +1,18 @@
+﻿@model Review
+
+@{
+    ViewData["Title"] = "Delete a Review";
+}
+
+<h2>Are you sure to delete this review?</h2>
+
+<div>
+    <p>Movie Name: @Model.MovieName</p>
+    <p>Comment: @Model.Comment</p>
+</div>
+
+@using (Html.BeginForm("Delete", "Review", new { id = Model.ReviewId }, FormMethod.Post))
+{
+    <button type="submit" class="btn btn-danger">Confirm Delete</button>
+    <a href="/Review/Index" class="btn btn-secondary">Cancel</a>
+}

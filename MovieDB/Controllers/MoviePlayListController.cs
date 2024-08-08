@@ -24,10 +24,14 @@ namespace MovieDB.Controllers
             _movieService = movieService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             var playLists = _playListService.GetPlayLists();
+            foreach (var playList in playLists)
+            {
+                playList.MoviePlayLists = _moviePlayListService.GetMoviePlayListsByPlayListId(playList.PlayListId).ToList();
+            }
             return View(playLists);
         }
 
@@ -39,7 +43,7 @@ namespace MovieDB.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(PlayList playList, int[] selectedMovieIds)
+        public IActionResult Create(PlayList playList, int[] selectedMovieIds)
         {
             if (ModelState.IsValid)
             {
@@ -62,26 +66,27 @@ namespace MovieDB.Controllers
                 return RedirectToAction("Index");
             }
 
+            ViewData["movies"] = _movieService.GetMovies();
+
             return View(playList);
         }
 
-        public async Task<IActionResult> Update(int playListId)
+        public IActionResult Update(int playListId)
         {
             var playList = _playListService.GetPlayList(playListId);
-            var moviesInPlayList = _moviePlayListService.GetMoviePlayListsByPlayListId(playListId).Select(m => m.MovieId).ToList();
-            var movies = _movieService.GetMovies();
+
 
             if (playList == null)
             {
                 return NotFound();
             }
-            ViewData["movies"] = movies;
-            ViewData["moviesInPlayList"] = moviesInPlayList;
+            ViewData["movies"] = _movieService.GetMovies(); ;
+            ViewData["moviesInPlayList"] = _moviePlayListService.GetMoviePlayListsByPlayListId(playListId).Select(m => m.MovieId).ToList(); ;
             return View(playList);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(PlayList playList, int[] selectedMovieIds)
+        public IActionResult Update(PlayList playList, int[] selectedMovieIds)
         {
             if (ModelState.IsValid)
             {
@@ -114,17 +119,22 @@ namespace MovieDB.Controllers
 
                 return RedirectToAction("Index");
             }
+
+            ViewData["movies"] = _movieService.GetMovies(); ;
+            ViewData["moviesInPlayList"] = _moviePlayListService.GetMoviePlayListsByPlayListId(playList.PlayListId).Select(m => m.MovieId).ToList(); ;
+
             return View(playList);
         }
          
-        public async Task<IActionResult> Delete(int playListId)
+        public IActionResult Delete(int playListId)
         {
             var playList = _playListService.GetPlayList(playListId);
+            playList.MoviePlayLists = _moviePlayListService.GetMoviePlayListsByPlayListId(playList.PlayListId).ToList();
             return View(playList);
         }
 
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int playListId)
+        public IActionResult DeleteConfirmed(int playListId)
         {
             _playListService.DeletePlayList(playListId);
             _moviePlayListService.DeleteMoviePlayList(playListId);
@@ -133,7 +143,7 @@ namespace MovieDB.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("DeleteAll")]
-        public async Task<IActionResult> DeleteAllConfirmed()
+        public IActionResult DeleteAllConfirmed()
         {
             _moviePlayListService.DeleteAllMoviePlayLists();
             _playListService.DeleteAllPlayLists();
@@ -141,7 +151,7 @@ namespace MovieDB.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> DeleteAll()
+        public IActionResult DeleteAll()
         {
             return View();
         }

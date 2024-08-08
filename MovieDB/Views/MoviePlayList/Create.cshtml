@@ -16,14 +16,20 @@
     </div>
 
     <h3>Add Movies</h3>
-    @foreach (var movie in moviesList)
-    {
-        <div>
-            <input type="checkbox" name="selectedMovieIds" value="@movie.movieID" />
-            @movie.title
-        </div>
-    }
 
+    @if (moviesList != null && moviesList.Any())
+    {
+        @foreach (var movie in moviesList)
+        {
+            <div>
+                <input type="checkbox" name="selectedMovieIds" value="@movie.movieID" />
+                @movie.title
+            </div>
+        }
+    } else
+    {
+        <p>No movies available to add.</p>
+    }
 
     <button type="submit" class="btn btn-primary">Create</button>
 }

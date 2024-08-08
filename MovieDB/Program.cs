@@ -36,11 +36,13 @@ namespace MovieDB
             builder.Services.AddScoped<PlayListDAL>();
             builder.Services.AddScoped<MovieDAL>();
             builder.Services.AddScoped<MovieService>();
+            builder.Services.AddScoped<ReviewDAL>();
+            builder.Services.AddScoped<ReviewService>();
 
             var app = builder.Build();
 
             // Create roles
-            CreateRoles(app).Wait();
+            CreateRoles(app);
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -58,12 +60,18 @@ namespace MovieDB
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Movie}/{action=Create}/{id?}");
+            app.MapRazorPages();
 
             app.Run();
         }
 
-        private static async Task CreateRoles(WebApplication app)
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddHttpClient();
+        }
+
+        private static async Task CreateRoles(IHost app)
         {
             using (var scope = app.Services.CreateScope())
             {
@@ -71,27 +79,46 @@ namespace MovieDB
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
                 string[] roleNames = { "Admin", "User" };
-                IdentityResult roleResult;
 
                 foreach (var roleName in roleNames)
                 {
-                    var roleExist = await roleManager.RoleExistsAsync(roleName);
-                    if (!roleExist)
+                    var roleExist = roleManager.RoleExistsAsync(roleName);
+                    var roleExistResult = roleExist.Result;
+                    if (!roleExistResult)
                     {
-                        roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                        var roleResult = roleManager.CreateAsync(new IdentityRole(roleName)).Result;
+                        if (!roleResult.Succeeded)
+                        {
+                            // Log or handle the error if role creation fails
+                            Console.WriteLine($"Failed to create role: {roleName}");
+                        }
                     }
                 }
 
-                var adminUser = await userManager.FindByEmailAsync("admin@admin.com");
-                if (adminUser != null)
+                var adminUser = userManager.FindByEmailAsync("admin@admin.com");
+                var adminUserResult = adminUser.Result;
+
+                if (adminUserResult != null)
                 {
-                    var isInAdminRole = await userManager.IsInRoleAsync(adminUser, "Admin");
-                    if (!isInAdminRole)
+                    var isInAdminRole = userManager.IsInRoleAsync(adminUserResult, "Admin");
+                    var isInAdminRoleResult = isInAdminRole.Result;
+                    if (!isInAdminRoleResult)
                     {
-                        await userManager.AddToRoleAsync(adminUser, "Admin");
+                        var result = userManager.AddToRoleAsync(adminUserResult, "Admin").Result;
+                    }
+                }
+
+                var users = userManager.Users.ToList();
+                foreach (var user in users)
+                {
+                    var roles = userManager.GetRolesAsync(user).Result;
+                    if (!roles.Contains("Admin") && !roles.Contains("User"))
+                    {
+                        userManager.AddToRoleAsync(user, "User").Wait();
                     }
                 }
             }
         }
+
     }
 }

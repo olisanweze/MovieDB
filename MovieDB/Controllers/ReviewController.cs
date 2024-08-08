@@ -7,78 +7,46 @@ namespace MovieDB.Controllers
 {
     public class ReviewController : Controller
     {
-        private readonly MovieDBContext _context;
+        private readonly ReviewService _reviewService;
+        private readonly MovieService _movieService;
 
-        public ReviewController(MovieDBContext context)
+        public ReviewController(ReviewService reviewService)
         {
-            _context = context;
+            _reviewService = reviewService;
         }
 
-        // GET: Review
-        public IActionResult Index()
-        {
-            var reviews = _context.Reviews.ToList();
-            return View(reviews);
-        }
-
-        // GET: Review/Create
         public IActionResult Create()
         {
-            return View();
+            Review review = new Review();
+
+            // Create a View Model object to pass
+            // Get all the movies you want to put in the dropdown menu
+            List<Movie> movies = _movieService.GetMovies();
+            // Assign those movies to the movies list in the view model
+
+
+            return View(review);
         }
 
         // POST: Review/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Review review)
+        public async Task<IActionResult> Create(Review review)
         {
             if (ModelState.IsValid)
             {
-                _context.Reviews.Add(review);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(review);
-        }
-
-        // GET: Review/Edit/5
-        public IActionResult Edit(int id)
-        {
-            var review = _context.Reviews.Find(id);
-            if (review == null)
-            {
-                return NotFound();
-            }
-            return View(review);
-        }
-
-        // POST: Review/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Review review)
-        {
-            if (id != review.Id)
-            {
-                return NotFound();
+                try
+                {
+                    object value = await _reviewService.AddReviewAsync(review);
+                    return RedirectToAction("Index", "Home");
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception
+                    ModelState.AddModelError(string.Empty, "An error occurred while adding the review.");
+                }
             }
 
-            if (ModelState.IsValid)
-            {
-                _context.Update(review);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(review);
-        }
-
-        // GET: Review/Delete/5
-        public IActionResult Delete(int id)
-        {
-            var review = _context.Reviews.Find(id);
-            if (review == null)
-            {
-                return NotFound();
-            }
+            // If we got this far, something failed; this will redisplay the form.
             return View(review);
         }
 

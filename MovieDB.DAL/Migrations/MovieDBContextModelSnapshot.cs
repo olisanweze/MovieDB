@@ -238,7 +238,7 @@ namespace MovieDB.DAL.Migrations
                     b.Property<int?>("MoviePlayListPlayListId")
                         .HasColumnType("int");
 
-                    b.Property<string>("plot")
+                    b.Property<string>("Plot")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
@@ -260,6 +260,8 @@ namespace MovieDB.DAL.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("movieID");
+
+                    b.HasIndex("ReviewId");
 
                     b.HasIndex("MoviePlayListPlayListId", "MoviePlayListMovieId");
 
@@ -312,11 +314,11 @@ namespace MovieDB.DAL.Migrations
 
             modelBuilder.Entity("MovieDB.Models.Review", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("ReviewId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReviewId"));
 
                     b.Property<string>("Comment")
                         .HasMaxLength(2000)
@@ -332,14 +334,22 @@ namespace MovieDB.DAL.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.HasKey("UserId", "MovieId");
+                    b.Property<int>("movieID")
+                        .HasColumnType("int");
 
-                    b.HasIndex("MovieId");
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("movieID");
 
                     b.ToTable("Reviews");
                 });
@@ -362,12 +372,17 @@ namespace MovieDB.DAL.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int?>("ReviewId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("ReviewId");
 
                     b.ToTable("Users");
                 });
@@ -425,6 +440,10 @@ namespace MovieDB.DAL.Migrations
 
             modelBuilder.Entity("MovieDB.Models.Movie", b =>
                 {
+                    b.HasOne("MovieDB.Models.Review", null)
+                        .WithMany("Movies")
+                        .HasForeignKey("ReviewId");
+
                     b.HasOne("MovieDB.Models.MoviePlayList", null)
                         .WithMany("Movies")
                         .HasForeignKey("MoviePlayListPlayListId", "MoviePlayListMovieId");
@@ -439,17 +458,28 @@ namespace MovieDB.DAL.Migrations
 
             modelBuilder.Entity("MovieDB.Models.Review", b =>
                 {
-                    b.HasOne("MovieDB.Models.Movie", null)
-                        .WithMany("Reviews")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MovieDB.Models.User", null)
+                    b.HasOne("MovieDB.Models.User", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MovieDB.Models.Movie", "Movie")
+                        .WithMany("Reviews")
+                        .HasForeignKey("movieID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MovieDB.Models.User", b =>
+                {
+                    b.HasOne("MovieDB.Models.Review", null)
+                        .WithMany("Users")
+                        .HasForeignKey("ReviewId");
                 });
 
             modelBuilder.Entity("MovieDB.Models.Movie", b =>
@@ -460,6 +490,13 @@ namespace MovieDB.DAL.Migrations
             modelBuilder.Entity("MovieDB.Models.MoviePlayList", b =>
                 {
                     b.Navigation("Movies");
+                });
+
+            modelBuilder.Entity("MovieDB.Models.Review", b =>
+                {
+                    b.Navigation("Movies");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("MovieDB.Models.User", b =>

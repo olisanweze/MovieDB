@@ -1,38 +1,26 @@
-﻿@model IEnumerable<MovieDB.Models.Review>
-
+﻿
 @{
-    ViewData["Title"] = "Review List";
+    ViewData["Title"] = "Reviews";
 }
 
-<h2>Review List</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
-
-<table class="table">
     <thead>
         <tr>
             <th>Movie Name</th>
             <th>User Name</th>
             <th>Star</th>
             <th>Comment</th>
-            <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.MovieName)</td>
-                <td>@Html.DisplayFor(modelItem => item.UserName)</td>
-                <td>@Html.DisplayFor(modelItem => item.Star)</td>
-                <td>@Html.DisplayFor(modelItem => item.Comment)</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<form asp-controller="Review" asp-action="Create" method="get">
+    <input class="btn btn-success" value="Add new review" type="submit" />
+</form>
