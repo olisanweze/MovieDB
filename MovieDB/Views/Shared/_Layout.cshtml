@@ -33,15 +33,12 @@
                             <ul class="dropdown-menu" aria-labelledby="playListDropdown">
                                 <li><a class="dropdown-item" asp-area="" asp-controller="MoviePlayList" asp-action="Index">View All Playlists</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-controller="MoviePlayList" asp-action="Create">Add New Playlist</a></li>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="MoviePlayList" asp-action="DeleteAll">Delete All PlayLists</a></li>
+                                }
                             </ul>
                         </li>
-
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="MoviePlayList" asp-action="DeleteAll">Delete All PlayLists</a>
-                            </li>
-                        }
                         <partial name = "_LoginPartial" />
                     </ul>
                 </div>
