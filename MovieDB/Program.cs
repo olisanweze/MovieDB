@@ -60,7 +60,7 @@ namespace MovieDB
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=MoviePlayList}/{action=Create}/{id?}");
+                pattern: "{controller=Movie}/{action=Create}/{id?}");
             app.MapRazorPages();
 
             app.Run();
