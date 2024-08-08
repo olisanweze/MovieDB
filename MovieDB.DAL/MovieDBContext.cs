@@ -69,10 +69,10 @@ namespace MovieDB.DAL
                 .IsRequired()
                 .HasMaxLength(200);
 
-            modelBuilder.Entity<Review>()
-                .Property(r => r.UserName)
-                .IsRequired()
-                .HasMaxLength(200);
+            //modelBuilder.Entity<Review>()
+            //    .Property(r => r.UserName)
+            //    .IsRequired()
+            //    .HasMaxLength(200);
 
             modelBuilder.Entity<Review>()
                 .Property(r => r.Star)
@@ -104,11 +104,11 @@ namespace MovieDB.DAL
 
             // relationships
 
-            modelBuilder.Entity<Review>()
-                .HasOne(u => u.User)
-                .WithMany(p => p.Reviews)
-                .HasForeignKey(u => u.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //modelBuilder.Entity<Review>()
+            //    .HasOne(u => u.User)
+            //    .WithMany(p => p.Reviews)
+            //    .HasForeignKey(u => u.UserId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Review>()
                 .HasOne(u => u.Movie)

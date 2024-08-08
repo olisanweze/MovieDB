@@ -2,22 +2,6 @@
 
 <h2>Create Review</h2>
 
-@if (Model?.Movies == null)
-{
-    <p>No movies available.</p>
-}
-
-@if (Model?.Comment == null)
-{
-    <p>No Comment available.</p>
-}
-
-@if (Model?.Star == null)
-{
-    <p>No Star available.</p>
-}
-
-
 @* @using (Html.BeginForm())
 {
     <div>
@@ -37,7 +21,7 @@
     <button type="submit">Add Review</button>
 } *@
 
-<form action="Create" method="post">
+<form asp-controller="Review" asp-action="Create" method="post">
     <div>
         <label asp-for="SelectedMovieId">
             Movies
@@ -52,9 +36,9 @@
         </label>
         <input asp-for="Star" type="range" name="star" min="0" max="5" />
     </div>
+    <label asp-for="Comment">Comment</label>
     <div>
-        <label asp-for="Comment">Comment</label>
-        <textarea asp-for="Comment" maxlength="250" cols="10" rows="10"></textarea>
+        <textarea asp-for="Comment" maxlength="250" cols="40" rows="5"></textarea>
     </div>
-    <button type="submit">Add review</button>
+    <button type="submit" class="btn btn-success">Add review</button>
 </form>

@@ -18,10 +18,10 @@ namespace MovieDB.Models
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         public string Email { get; set; }
 
-        public Review Review { get; set; }
+        //public Review Review { get; set; }
         public MoviePlayList MoviePlayList { get; set; }
 
-        public ICollection<Review> Reviews { get; set; }
+        //public ICollection<Review> Reviews { get; set; }
         public ICollection<MoviePlayList> MoviePlayLists { get; set; }
     }
 }

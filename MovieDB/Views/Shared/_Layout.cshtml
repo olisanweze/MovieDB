@@ -8,12 +8,16 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap">
     <link rel="stylesheet" href="~/MovieDB.styles.css" asp-append-version="true" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+          integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+5n5z5ta3FX7jB4I6bzdu16f7A5t5F5Fj2xj"
+          crossorigin="anonymous" />
 </head>
 <body style="background-color: #00002b; color: #fff">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a style="margin-right:680px" class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MoviePlex</a>
+                <a style="margin:0 510px 0 110px" class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MoviePlex</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -26,11 +30,19 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Movie" asp-action="Index">Movies</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MoviePlayList" asp-action="Index">Show PlayList</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MoviePlayList" asp-action="Create">Create PlayList</a>
+                        <!-- Movie Playlist Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="moviePlaylistDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Movie PlayList
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="moviePlaylistDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="MoviePlayList" asp-action="Index">View Playlists</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="MoviePlayList" asp-action="Create">Add New Playlist</a></li>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="MoviePlayList" asp-action="DeleteAll">Delete All PlayLists</a></li>
+                                }
+                            </ul>
                         </li>
                         @if (User.IsInRole("Admin"))
                         {
@@ -38,7 +50,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="MoviePlayList" asp-action="DeleteAll">Delete All PlayLists</a>
                             </li>
                         }
-                        <!-- Registration Dropdown -->
+                        <!-- Review Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="reviewDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Reviews
@@ -60,7 +72,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted flex center">
         <div class="container">
             &copy; 2024 - MoviePlex - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>

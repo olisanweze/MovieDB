@@ -13,8 +13,8 @@ namespace MovieDB.Models
         //public Movie? Movie { get; set; }
 
         public int SelectedMovieId { get; set; } // Used as a reference to the movie the user has selected
-        
-        // This is to display the movies in the dropdown
-        public SelectList Movies { get; set; }
+
+        // This is to display the movies in the dropdown. By default, make it empty so that it is not null and passes the ModelState.IsValid check
+        public SelectList Movies { get; set; } = new SelectList(Enumerable.Empty<SelectListItem>(), "Value", "Text");
     }
 }

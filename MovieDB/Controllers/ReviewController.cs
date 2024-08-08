@@ -48,40 +48,41 @@ namespace MovieDB.Controllers
             return View(reviewViewModel);
         }
 
-
         [HttpPost]
         public IActionResult Create(ReviewViewModel reviewViewModel)
         {
-            Review myReview = new Review
-            {
-                
-                Movies = _movieService.GetMovies()
-            };
-            //{
-            //    MovieName = review.MovieName,
-            //    Star = review.Star,
-            //    Comment = review.Comment
-            //};
-            //if (ModelState.IsValid)
-            //{
-            //    _reviewService.AddReview(review);
-            //    return RedirectToAction("Index");
-            //}
-            return View();
-        }
+            // Retrieve the selected movie
+            Movie movieSelected = _movieService.GetMovie(reviewViewModel.SelectedMovieId);
 
-        public IActionResult Delete(int id)
-        {
-            var review = _reviewService.GetReview(id);
-            if (review != null)
+            // Initialize a review
+            Review review = new Review
             {
-                _reviewService.DeleteReview(id);
+                MovieName = movieSelected.title,
+                Star = reviewViewModel.Star,
+                Comment = reviewViewModel.Comment,
+                Movie = movieSelected
+            };
+
+            // Ensure Reviews collection is initialized in case this is the first time this movie is getting a review
+            if (movieSelected.Reviews == null)
+            {
+                movieSelected.Reviews = new List<Review>();
             }
-            return RedirectToAction("Index");
+
+            // Associate the review with the movie
+            movieSelected.Reviews.Add(review);
+
+            if (ModelState.IsValid)
+            {
+                _reviewService.AddReview(review);
+                return RedirectToAction("Index");
+            }
+
+            return View(reviewViewModel);
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public IActionResult ConfirmDelete(int id)
         {
             var review = _reviewService.GetReview(id);
             if (review == null)
@@ -92,14 +93,21 @@ namespace MovieDB.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update(Review review)
+
+        public IActionResult ConfirmDelete()
         {
-            if (ModelState.IsValid)
+            return View();
+        }
+
+
+        public IActionResult Delete(int id)
+        {
+            var review = _reviewService.GetReview(id);
+            if (review != null)
             {
-                _reviewService.UpdateReview(review);
-                return RedirectToAction("Index");
+                _reviewService.DeleteReview(id);
             }
-            return View(review);
+            return RedirectToAction("Index");
         }
     }
 }
