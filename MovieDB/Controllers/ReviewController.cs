@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieDB.BLL;
 using MovieDB.Models;
 
@@ -25,49 +26,63 @@ namespace MovieDB.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            Review review = new Review();
+            // Fetch the list of movies
+            var movies = _movieService.GetMovies();
+
+            // Transform the movie list to SelectListItem list. Because, this is the "format" that the Select HTML tag works with in asp.net
+            //IEnumerable<SelectListItem> movieSelectList = movies.Select(movie => new SelectListItem
+            //{
+            //    Value = movie.movieID.ToString(), // Use the movie's ID as the value
+            //    Text = movie.title // Use the movie's title as the display text
+            //});
+
 
             // Create a View Model object to pass
-            // Get all the movies you want to put in the dropdown menu
-            List<Movie> movies = _movieService.GetMovies();
-            // Assign those movies to the movies list in the view model
+            ReviewViewModel reviewViewModel = new ReviewViewModel()
+            {
+                // Pass the list of movies as SelectListItem
+                Movies = new SelectList(movies, "movieID", "title"),
+                Comment = ""    
+            };
 
-
-            return View(review);
+            return View(reviewViewModel);
         }
 
         [HttpPost]
-        public IActionResult Create(Review review)
+        public IActionResult Create(ReviewViewModel reviewViewModel)
         {
-            Review myReview = new Review
+            // Retrieve the selected movie
+            Movie movieSelected = _movieService.GetMovie(reviewViewModel.SelectedMovieId);
+
+            // Initialize a review
+            Review review = new Review
             {
-                Movies = _movieService.GetMovies()
+                MovieName = movieSelected.title,
+                Star = reviewViewModel.Star,
+                Comment = reviewViewModel.Comment,
+                Movie = movieSelected
             };
-            //{
-            //    MovieName = review.MovieName,
-            //    Star = review.Star,
-            //    Comment = review.Comment
-            //};
+
+            // Ensure Reviews collection is initialized in case this is the first time this movie is getting a review
+            if (movieSelected.Reviews == null)
+            {
+                movieSelected.Reviews = new List<Review>();
+            }
+
+            // Associate the review with the movie
+            movieSelected.Reviews.Add(review);
+
             if (ModelState.IsValid)
             {
                 _reviewService.AddReview(review);
                 return RedirectToAction("Index");
             }
-            return View(review);
-        }
 
-        public IActionResult Delete(int id)
-        {
-            var review = _reviewService.GetReview(id);
-            if (review != null)
-            {
-                _reviewService.DeleteReview(id);
-            }
-            return RedirectToAction("Index");
+            return View(reviewViewModel);
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public IActionResult ConfirmDelete(int id)
         {
             var review = _reviewService.GetReview(id);
             if (review == null)
@@ -78,14 +93,21 @@ namespace MovieDB.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update(Review review)
+
+        public IActionResult ConfirmDelete()
         {
-            if (ModelState.IsValid)
+            return View();
+        }
+
+
+        public IActionResult Delete(int id)
+        {
+            var review = _reviewService.GetReview(id);
+            if (review != null)
             {
-                _reviewService.UpdateReview(review);
-                return RedirectToAction("Index");
+                _reviewService.DeleteReview(id);
             }
-            return View(review);
+            return RedirectToAction("Index");
         }
     }
 }

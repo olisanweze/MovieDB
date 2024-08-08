@@ -238,9 +238,6 @@ namespace MovieDB.DAL.Migrations
                     b.Property<int?>("MoviePlayListPlayListId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ReviewId")
-                        .HasColumnType("int");
-
                     b.Property<string>("plot")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
@@ -264,11 +261,9 @@ namespace MovieDB.DAL.Migrations
 
                     b.HasKey("movieID");
 
-                    b.HasIndex("ReviewId");
-
                     b.HasIndex("MoviePlayListPlayListId", "MoviePlayListMovieId");
 
-                    b.ToTable("Movies");
+                    b.ToTable("Movies", (string)null);
                 });
 
             modelBuilder.Entity("MovieDB.Models.MoviePlayList", b =>
@@ -289,9 +284,11 @@ namespace MovieDB.DAL.Migrations
 
                     b.HasKey("PlayListId", "MovieId");
 
+                    b.HasIndex("MovieId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("MoviePlayLists");
+                    b.ToTable("MoviePlayLists", (string)null);
                 });
 
             modelBuilder.Entity("MovieDB.Models.PlayList", b =>
@@ -312,7 +309,7 @@ namespace MovieDB.DAL.Migrations
 
                     b.HasKey("PlayListId");
 
-                    b.ToTable("PlayLists");
+                    b.ToTable("PlayLists", (string)null);
                 });
 
             modelBuilder.Entity("MovieDB.Models.Review", b =>
@@ -337,24 +334,14 @@ namespace MovieDB.DAL.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
                     b.Property<int>("movieID")
                         .HasColumnType("int");
 
                     b.HasKey("ReviewId");
 
-                    b.HasIndex("UserId");
-
                     b.HasIndex("movieID");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("MovieDB.Models.User", b =>
@@ -370,13 +357,16 @@ namespace MovieDB.DAL.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int>("MoviePlayListMovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MoviePlayListPlayListId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<int?>("ReviewId")
-                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -385,9 +375,9 @@ namespace MovieDB.DAL.Migrations
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("ReviewId");
+                    b.HasIndex("MoviePlayListPlayListId", "MoviePlayListMovieId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -443,10 +433,6 @@ namespace MovieDB.DAL.Migrations
 
             modelBuilder.Entity("MovieDB.Models.Movie", b =>
                 {
-                    b.HasOne("MovieDB.Models.Review", null)
-                        .WithMany("Movies")
-                        .HasForeignKey("ReviewId");
-
                     b.HasOne("MovieDB.Models.MoviePlayList", null)
                         .WithMany("Movies")
                         .HasForeignKey("MoviePlayListPlayListId", "MoviePlayListMovieId");
@@ -454,19 +440,29 @@ namespace MovieDB.DAL.Migrations
 
             modelBuilder.Entity("MovieDB.Models.MoviePlayList", b =>
                 {
+                    b.HasOne("MovieDB.Models.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieDB.Models.PlayList", "PlayList")
+                        .WithMany("MoviePlayLists")
+                        .HasForeignKey("PlayListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("MovieDB.Models.User", null)
                         .WithMany("MoviePlayLists")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("PlayList");
                 });
 
             modelBuilder.Entity("MovieDB.Models.Review", b =>
                 {
-                    b.HasOne("MovieDB.Models.User", "User")
-                        .WithMany("Reviews")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("MovieDB.Models.Movie", "Movie")
                         .WithMany("Reviews")
                         .HasForeignKey("movieID")
@@ -474,15 +470,17 @@ namespace MovieDB.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Movie");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MovieDB.Models.User", b =>
                 {
-                    b.HasOne("MovieDB.Models.Review", null)
-                        .WithMany("Users")
-                        .HasForeignKey("ReviewId");
+                    b.HasOne("MovieDB.Models.MoviePlayList", "MoviePlayList")
+                        .WithMany()
+                        .HasForeignKey("MoviePlayListPlayListId", "MoviePlayListMovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MoviePlayList");
                 });
 
             modelBuilder.Entity("MovieDB.Models.Movie", b =>
@@ -495,18 +493,14 @@ namespace MovieDB.DAL.Migrations
                     b.Navigation("Movies");
                 });
 
-            modelBuilder.Entity("MovieDB.Models.Review", b =>
+            modelBuilder.Entity("MovieDB.Models.PlayList", b =>
                 {
-                    b.Navigation("Movies");
-
-                    b.Navigation("Users");
+                    b.Navigation("MoviePlayLists");
                 });
 
             modelBuilder.Entity("MovieDB.Models.User", b =>
                 {
                     b.Navigation("MoviePlayLists");
-
-                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }
