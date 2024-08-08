@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieDB.BLL;
 using MovieDB.Models;
 
@@ -25,22 +26,35 @@ namespace MovieDB.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            Review review = new Review();
+            // Fetch the list of movies
+            var movies = _movieService.GetMovies();
+
+            // Transform the movie list to SelectListItem list. Because, this is the "format" that the Select HTML tag works with in asp.net
+            //IEnumerable<SelectListItem> movieSelectList = movies.Select(movie => new SelectListItem
+            //{
+            //    Value = movie.movieID.ToString(), // Use the movie's ID as the value
+            //    Text = movie.title // Use the movie's title as the display text
+            //});
+
 
             // Create a View Model object to pass
-            // Get all the movies you want to put in the dropdown menu
-            List<Movie> movies = _movieService.GetMovies();
-            // Assign those movies to the movies list in the view model
+            ReviewViewModel reviewViewModel = new ReviewViewModel()
+            {
+                // Pass the list of movies as SelectListItem
+                Movies = new SelectList(movies, "movieID", "title"),
+                Comment = ""    
+            };
 
-
-            return View(review);
+            return View(reviewViewModel);
         }
 
+
         [HttpPost]
-        public IActionResult Create(Review review)
+        public IActionResult Create(ReviewViewModel reviewViewModel)
         {
             Review myReview = new Review
             {
+                
                 Movies = _movieService.GetMovies()
             };
             //{
@@ -48,12 +62,12 @@ namespace MovieDB.Controllers
             //    Star = review.Star,
             //    Comment = review.Comment
             //};
-            if (ModelState.IsValid)
-            {
-                _reviewService.AddReview(review);
-                return RedirectToAction("Index");
-            }
-            return View(review);
+            //if (ModelState.IsValid)
+            //{
+            //    _reviewService.AddReview(review);
+            //    return RedirectToAction("Index");
+            //}
+            return View();
         }
 
         public IActionResult Delete(int id)

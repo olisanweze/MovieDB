@@ -1,12 +1,24 @@
-﻿@model Review
-
-@{
-    ViewData["Title"] = "Create Review";
-}
+﻿@model MovieDB.Models.ReviewViewModel
 
 <h2>Create Review</h2>
 
-@using (Html.BeginForm())
+@if (Model?.Movies == null)
+{
+    <p>No movies available.</p>
+}
+
+@if (Model?.Comment == null)
+{
+    <p>No Comment available.</p>
+}
+
+@if (Model?.Star == null)
+{
+    <p>No Star available.</p>
+}
+
+
+@* @using (Html.BeginForm())
 {
     <div>
         @Html.LabelFor(m => m.Movies)
@@ -23,10 +35,26 @@
         @Html.ValidationMessageFor(m => m.Comment, "", new { @class = "text-danger " })
     </div>
     <button type="submit">Add Review</button>
-}
+} *@
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+<form action="Create" method="post">
+    <div>
+        <label asp-for="SelectedMovieId">
+            Movies
+        </label>
+        <select asp-items="Model?.Movies" asp-for="SelectedMovieId">
+            <option value="">Select a movie</option>
+        </select>
+    </div>
+    <div>
+        <label asp-for="Star">
+            Star
+        </label>
+        <input asp-for="Star" type="range" name="star" min="0" max="5" />
+    </div>
+    <div>
+        <label asp-for="Comment">Comment</label>
+        <textarea asp-for="Comment" maxlength="250" cols="10" rows="10"></textarea>
+    </div>
+    <button type="submit">Add review</button>
+</form>
