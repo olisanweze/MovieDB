@@ -8,10 +8,12 @@ namespace MovieDB.Controllers
     public class ReviewController : Controller
     {
         private readonly ReviewService _reviewService;
+        private readonly MovieService _movieService;
 
-        public ReviewController(ReviewService reviewService)
+        public ReviewController(ReviewService reviewService, MovieService movieService)
         {
             _reviewService = reviewService;
+            _movieService = movieService;
         }
 
         public IActionResult Index()
@@ -23,12 +25,29 @@ namespace MovieDB.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            Review review = new Review();
+
+            // Create a View Model object to pass
+            // Get all the movies you want to put in the dropdown menu
+            List<Movie> movies = _movieService.GetMovies();
+            // Assign those movies to the movies list in the view model
+
+
+            return View(review);
         }
 
         [HttpPost]
         public IActionResult Create(Review review)
         {
+            Review myReview = new Review
+            {
+                Movies = _movieService.GetMovies()
+            };
+            //{
+            //    MovieName = review.MovieName,
+            //    Star = review.Star,
+            //    Comment = review.Comment
+            //};
             if (ModelState.IsValid)
             {
                 _reviewService.AddReview(review);

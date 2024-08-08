@@ -34,6 +34,8 @@ namespace MovieDB
             //register DAL and BLL services
             builder.Services.AddScoped<MovieDAL>();
             builder.Services.AddScoped<MovieService>();
+            builder.Services.AddScoped<ReviewDAL>();
+            builder.Services.AddScoped<ReviewService>();
 
             var app = builder.Build();
 

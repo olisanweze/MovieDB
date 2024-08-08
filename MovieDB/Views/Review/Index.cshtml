@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Review>
+
+@{
+    ViewData["Title"] = "Reviews";
+}
+
+<h2>Reviews</h2>
+
+<table class="table" style="color: #fff>
+    <thead>
+        <tr>
+            <th>Movie Name</th>
+            <th>Star</th>
+            <th>Comment</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="reviewList">
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.MovieName</td>
+                <td>@review.Star</td>
+                <td>@review.Comment</td>
+                <td>
+                    <a class="btn btn-danger" href="@Url.Action("ConfirmDelete", new { id = review.ReviewId })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form asp-controller="Review" asp-action="Create" method="get">
+    <input class="btn btn-success" value="Add new review" type="submit" />
+</form>

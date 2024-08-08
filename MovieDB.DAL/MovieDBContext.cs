@@ -62,7 +62,7 @@ namespace MovieDB.DAL
 
             //review
             modelBuilder.Entity<Review>()
-                .HasKey(r => new { r.UserId, r.MovieId });
+                .HasKey(m => m.ReviewId);
 
             modelBuilder.Entity<Review>()
                 .Property(r => r.MovieName)
@@ -101,6 +101,20 @@ namespace MovieDB.DAL
                 .Property(u => u.Email)
                 .IsRequired()
                 .HasMaxLength(200);
+
+            // relationships
+
+            modelBuilder.Entity<Review>()
+                .HasOne(u => u.User)
+                .WithMany(p => p.Reviews)
+                .HasForeignKey(u => u.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(u => u.Movie)
+                .WithMany(p => p.Reviews)
+                .HasForeignKey(u => u.movieID)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
