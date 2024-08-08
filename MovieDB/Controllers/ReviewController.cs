@@ -1,25 +1,23 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using MovieDB.BLL;
+﻿using Microsoft.AspNetCore.Mvc;
+using MovieDB.DAL;
 using MovieDB.Models;
+using System.Linq;
 
 namespace MovieDB.Controllers
 {
     public class ReviewController : Controller
     {
-        private readonly ReviewService _reviewService;
-        //private readonly ILogger<ReviewController> _logger;
+        private readonly MovieDBContext _context;
 
-        public ReviewController(ReviewService reviewService)
+        public ReviewController(MovieDBContext context)
         {
-            _reviewService = reviewService;
+            _context = context;
         }
 
+        // GET: Review
         public IActionResult Index()
         {
-            List<Review> reviews = new List<Review>();
+            var reviews = _context.Reviews.ToList();
             return View(reviews);
         }
 
@@ -29,22 +27,70 @@ namespace MovieDB.Controllers
             return View();
         }
 
+        // POST: Review/Create
         [HttpPost]
-        public async Task<IActionResult> Create(Review review)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Review review)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    object value = await _reviewService.AddReviewAsync(review);
-                    return RedirectToAction("Index", "Home");
-                }
-                catch (Exception ex)
-                {
-                    // Log the exception
-                    ModelState.AddModelError(string.Empty, "An error occurred while adding the review.");
-                }
+                _context.Reviews.Add(review);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(review);
+        }
+
+        // GET: Review/Edit/5
+        public IActionResult Edit(int id)
+        {
+            var review = _context.Reviews.Find(id);
+            if (review == null)
+            {
+                return NotFound();
+            }
+            return View(review);
+        }
+
+        // POST: Review/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Review review)
+        {
+            if (id != review.Id)
+            {
+                return NotFound();
             }
 
+            if (ModelState.IsValid)
+            {
+                _context.Update(review);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(review);
+        }
+
+        // GET: Review/Delete/5
+        public IActionResult Delete(int id)
+        {
+            var review = _context.Reviews.Find(id);
+            if (review == null)
+            {
+                return NotFound();
+            }
+            return View(review);
+        }
+
+        // POST: Review/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var review = _context.Reviews.Find(id);
+            _context.Reviews.Remove(review);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

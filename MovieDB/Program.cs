@@ -1,5 +1,9 @@
-namespace MovieDB
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MovieDB.BLL;
+using MovieDB.DAL;
 
+namespace MovieDB
 {
     public class Program
     {
@@ -7,32 +11,29 @@ namespace MovieDB
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var connectionString = builder.Configuration.GetConnectionString("MovieDBContextConnection") ?? throw new InvalidOperationException("Connection string 'MovieDBContextConnection' not found.");
+            // Configure the connection string
+            var connectionString = builder.Configuration.GetConnectionString("MovieDBContextConnection")
+                ?? throw new InvalidOperationException("Connection string 'MovieDBContextConnection' not found.");
 
-            builder.Services.AddDbContext<MovieDBContext>(options => options.UseSqlServer(connectionString));
-
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MovieDBContext>();
-
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
-            builder.Services.AddHttpClient();
-
-            //register DbContext
+            // Register DbContext
             builder.Services.AddDbContext<MovieDBContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(connectionString));
 
-            //add identity service
+            // Register Identity services
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<MovieDBContext>()
                 .AddDefaultUI();
 
-            // Register MoviePlayListBLL and MoviePlayListDAL
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpClient();
+
+            // Register BLL and DAL services
             builder.Services.AddScoped<MoviePlayListService>();
             builder.Services.AddScoped<MoviePlayListDAL>();
             builder.Services.AddScoped<PlayListService>();
             builder.Services.AddScoped<PlayListDAL>();
-            //register DAL and BLL services
             builder.Services.AddScoped<MovieDAL>();
             builder.Services.AddScoped<MovieService>();
 
@@ -45,11 +46,8 @@ namespace MovieDB
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                // app.UseHsts();
             }
 
-            // app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -65,12 +63,7 @@ namespace MovieDB
             app.Run();
         }
 
-        private static void ConfigureServices(IServiceCollection services)
-        {
-            services.AddHttpClient();
-        }
-
-        private static async Task CreateRoles(IHost app)
+        private static async Task CreateRoles(WebApplication app)
         {
             using (var scope = app.Services.CreateScope())
             {
@@ -100,6 +93,5 @@ namespace MovieDB
                 }
             }
         }
-
     }
 }

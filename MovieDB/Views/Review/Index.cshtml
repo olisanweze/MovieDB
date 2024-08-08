@@ -1,9 +1,13 @@
 ﻿@model IEnumerable<MovieDB.Models.Review>
 
-<h2>Reviews</h2>
+@{
+    ViewData["Title"] = "Review List";
+}
+
+<h2>Review List</h2>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create New Review</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
 
 <table class="table">
@@ -13,20 +17,20 @@
             <th>User Name</th>
             <th>Star</th>
             <th>Comment</th>
-            <th>Actions</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var review in Model)
+        @foreach (var item in Model)
         {
             <tr>
-                <td>@review.MovieName</td>
-                <td>@review.UserName</td>
-                <td>@review.Star</td>
-                <td>@review.Comment</td>
+                <td>@Html.DisplayFor(modelItem => item.MovieName)</td>
+                <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Star)</td>
+                <td>@Html.DisplayFor(modelItem => item.Comment)</td>
                 <td>
-                    <a asp-action="Update" asp-route-id="@review.MovieId" class="btn btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@review.MovieId" class="btn btn-danger">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }
