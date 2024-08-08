@@ -28,6 +28,10 @@ namespace MovieDB.Controllers
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             var playLists = _playListService.GetPlayLists();
+            foreach (var playList in playLists)
+            {
+                playList.MoviePlayLists = _moviePlayListService.GetMoviePlayListsByPlayListId(playList.PlayListId).ToList();
+            }
             return View(playLists);
         }
 
@@ -62,21 +66,22 @@ namespace MovieDB.Controllers
                 return RedirectToAction("Index");
             }
 
+            ViewData["movies"] = _movieService.GetMovies();
+
             return View(playList);
         }
 
         public IActionResult Update(int playListId)
         {
             var playList = _playListService.GetPlayList(playListId);
-            var moviesInPlayList = _moviePlayListService.GetMoviePlayListsByPlayListId(playListId).Select(m => m.MovieId).ToList();
-            var movies = _movieService.GetMovies();
+
 
             if (playList == null)
             {
                 return NotFound();
             }
-            ViewData["movies"] = movies;
-            ViewData["moviesInPlayList"] = moviesInPlayList;
+            ViewData["movies"] = _movieService.GetMovies(); ;
+            ViewData["moviesInPlayList"] = _moviePlayListService.GetMoviePlayListsByPlayListId(playListId).Select(m => m.MovieId).ToList(); ;
             return View(playList);
         }
 
@@ -114,12 +119,17 @@ namespace MovieDB.Controllers
 
                 return RedirectToAction("Index");
             }
+
+            ViewData["movies"] = _movieService.GetMovies(); ;
+            ViewData["moviesInPlayList"] = _moviePlayListService.GetMoviePlayListsByPlayListId(playList.PlayListId).Select(m => m.MovieId).ToList(); ;
+
             return View(playList);
         }
          
         public IActionResult Delete(int playListId)
         {
             var playList = _playListService.GetPlayList(playListId);
+            playList.MoviePlayLists = _moviePlayListService.GetMoviePlayListsByPlayListId(playList.PlayListId).ToList();
             return View(playList);
         }
 

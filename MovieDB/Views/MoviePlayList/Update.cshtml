@@ -18,12 +18,20 @@
     </div>
 
     <h3>Update Movies</h3>
-    @foreach (var movie in moviesList)
+    
+    @if (moviesList != null && moviesList.Any())
     {
-        <div>
-            <input type="checkbox" name="selectedMovieIds" value="@movie.movieID" @(moviesInPlayList.Contains(movie.movieID) ? "checked" : "") />
-            @movie.title
-        </div>
+        @foreach (var movie in moviesList)
+        {
+            <div>
+                <input type="checkbox" name="selectedMovieIds" value="@movie.movieID" @(moviesInPlayList.Contains(movie.movieID) ? "checked" : "") />
+                @movie.title
+            </div>
+        }
+    }
+    else
+    {
+        <p>No movies available to add.</p>
     }
     <button type="submit" class="btn btn-primary">Update</button>
 }

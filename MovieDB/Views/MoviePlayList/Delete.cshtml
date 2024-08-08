@@ -4,15 +4,26 @@
     ViewData["Title"] = "Delete a Movie Playlist";
 }
 
-<h2>Are you sure to delete this movie playlist?</h2>
+<h2>Are you sure you want to delete this movie playlist?</h2>
 
 <div>
-    <p>PlayList name: @Model.PlayListName</p>
+    <p>PlayList Name: @Model.PlayListName</p>
+    @{
+        var movieNames = string.Join(", ", Model.MoviePlayLists.Select(mp => mp.MovieName));
+    }
+    @if (string.IsNullOrEmpty(movieNames))
+    {
+        <span>No movies in this playlist. You can proceed with deletion!</span>
+    }
+    else
+    {
+        <span>Your Playlist has some movies and you will lose track of them : @movieNames </span>
+    }
 </div>
 
 @using (Html.BeginForm("Delete", "MoviePlayList", FormMethod.Post))
 {
     @Html.HiddenFor(m => m.PlayListId)
-    <button type = "submit" class="btn btn-danger">Delete</button>
+    <button type="submit" class="btn btn-primary">Delete</button>
     <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
 }
