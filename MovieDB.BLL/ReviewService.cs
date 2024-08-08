@@ -36,5 +36,10 @@ namespace MovieDB.BLL
         {
             _reviewDAL.DeleteReview(id);
         }
+
+        public object GetReviewById(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

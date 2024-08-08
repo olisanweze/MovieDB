@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MovieDB.BLL;
 using MovieDB.DAL;
 using MovieDB.Models;
-using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace MovieDB.Controllers
 {
@@ -10,33 +12,36 @@ namespace MovieDB.Controllers
         private readonly ReviewService _reviewService;
         private readonly MovieService _movieService;
 
-        public ReviewController(ReviewService reviewService)
+        public ReviewController(ReviewService reviewService, MovieService movieService)
         {
             _reviewService = reviewService;
+            _movieService = movieService;
         }
 
+        // GET: Review/Create
         public IActionResult Create()
         {
+            // Create a new review object
             Review review = new Review();
 
-            // Create a View Model object to pass
-            // Get all the movies you want to put in the dropdown menu
+            // Get all movies to populate the dropdown menu
             List<Movie> movies = _movieService.GetMovies();
-            // Assign those movies to the movies list in the view model
 
+            // Assign movies to the ViewBag to use in the View
+            ViewBag.Movies = movies;
 
             return View(review);
         }
 
         // POST: Review/Create
         [HttpPost]
-        public async Task<IActionResult> Create(Review review)
+        public IActionResult Create(Review review)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    object value = await _reviewService.AddReviewAsync(review);
+                    _reviewService.AddReview(review);
                     return RedirectToAction("Index", "Home");
                 }
                 catch (Exception ex)
@@ -46,7 +51,10 @@ namespace MovieDB.Controllers
                 }
             }
 
-            // If we got this far, something failed; this will redisplay the form.
+            // Repopulate the movies in case the form is redisplayed
+            ViewBag.Movies = _movieService.GetMovies();
+
+            // If we got this far, something failed; redisplay the form
             return View(review);
         }
 
@@ -55,9 +63,11 @@ namespace MovieDB.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var review = _context.Reviews.Find(id);
-            _context.Reviews.Remove(review);
-            _context.SaveChanges();
+            var review = _reviewService.GetReviewById(id);
+            if (review != null)
+            {
+                _reviewService.DeleteReview(id);
+            }
             return RedirectToAction(nameof(Index));
         }
     }
