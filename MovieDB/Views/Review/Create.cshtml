@@ -29,6 +29,7 @@
         <select asp-items="Model?.Movies" asp-for="SelectedMovieId">
             <option value="">Select a movie</option>
         </select>
+        @Html.ValidationMessageFor(m => m.Movies, "", new { @class = "text-danger " })
     </div>
     <div>
         <label asp-for="Star">
