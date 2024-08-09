@@ -91,5 +91,27 @@ namespace MovieDB.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult Update(int id)
+        {
+            var movie = _movieService.GetMovie(id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            return View(movie);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(Movie movie)
+        {
+            if (ModelState.IsValid)
+            {
+                await _movieService.UpdateMovie(movie);
+                return RedirectToAction("Index");
+            }
+            return View(movie);
+        }
     }
 }
