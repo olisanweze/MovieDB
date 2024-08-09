@@ -1,0 +1,29 @@
+﻿@model MovieDB.Models.ReviewUpdateViewModel
+
+<h2>Update Review</h2>
+
+<form asp-controller="Review" asp-action="Update" method="post">
+    <div>
+       
+        <label asp-for="movieID">
+            Movie
+        </label>
+        <select asp-for="movieID">
+            <option value="@Model.movieID" selected>@Model.MovieName</option>
+        </select>
+
+        <input type="hidden" asp-for="ReviewId" />
+        <input type="hidden" asp-for="MovieName" />
+    </div>
+    <div>
+        <label asp-for="Star">
+            Star
+        </label>
+        <input asp-for="Star" type="range" name="star" min="0" max="5"/>
+    </div>
+    <label asp-for="Comment">Comment</label>
+    <div>
+        <textarea asp-for="Comment" maxlength="250" cols="40" rows="5">@Model.Comment</textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Update review</button>
+</form>
