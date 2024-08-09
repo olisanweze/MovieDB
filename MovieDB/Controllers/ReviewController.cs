@@ -23,7 +23,7 @@ namespace MovieDB.Controllers
             return View(reviews);
         }
 
-        [HttpGet]
+        [HttpGet("create/")]
         public IActionResult Create()
         {
             // Fetch the list of movies
@@ -48,8 +48,8 @@ namespace MovieDB.Controllers
             return View(reviewViewModel);
         }
 
-        [HttpPost]
-        public IActionResult Create(ReviewViewModel reviewViewModel)
+        [HttpPost("create/{selectedMovieId?}")]
+        public IActionResult Create(int? selectedMovieId, ReviewViewModel reviewViewModel)
         {
             // Retrieve the selected movie
             Movie movieSelected = _movieService.GetMovie(reviewViewModel.SelectedMovieId);
@@ -80,6 +80,25 @@ namespace MovieDB.Controllers
 
             return View(reviewViewModel);
         }
+
+        [HttpGet("create/{selectedMovieId}")]
+        public IActionResult Create(int selectedMovieId)
+        {
+            var movie = _movieService.GetMovie(selectedMovieId);
+            var movieList = new List<Movie>();
+            movieList.Add(movie);
+
+            // Create a View Model object to pass
+            ReviewViewModel reviewViewModel = new ReviewViewModel()
+            {
+                // Pass the list of movies as SelectListItem
+                Movies = new SelectList(movieList, "movieID", "title"),
+                Comment = ""
+            };
+
+            return View(reviewViewModel);
+        }
+
 
         [HttpGet]
         public IActionResult ConfirmDelete(int id)
