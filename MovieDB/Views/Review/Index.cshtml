@@ -24,7 +24,7 @@
                 <td>@review.Comment</td>
                 <td>
                     <a class="btn btn-danger" href="@Url.Action("ConfirmDelete", new { id = review.ReviewId })">Delete</a>
-                    <a class="btn btn-danger" href="@Url.Action("Update", new { id = review.ReviewId })">Update</a>
+                    <a class="btn btn-primary" href="@Url.Action("Update", new { id = review.ReviewId })">Update</a>
                 </td>
             </tr>
         }
