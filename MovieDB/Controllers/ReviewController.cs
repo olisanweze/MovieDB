@@ -23,7 +23,7 @@ namespace MovieDB.Controllers
             return View(reviews);
         }
 
-        [HttpGet]
+        [HttpGet("create/")]
         public IActionResult Create()
         {
             // Fetch the list of movies
@@ -48,8 +48,8 @@ namespace MovieDB.Controllers
             return View(reviewViewModel);
         }
 
-        [HttpPost]
-        public IActionResult Create(ReviewViewModel reviewViewModel)
+        [HttpPost("create/{selectedMovieId?}")]
+        public IActionResult Create(int? selectedMovieId, ReviewViewModel reviewViewModel)
         {
             // Retrieve the selected movie
             Movie movieSelected = _movieService.GetMovie(reviewViewModel.SelectedMovieId);
@@ -81,6 +81,25 @@ namespace MovieDB.Controllers
             return View(reviewViewModel);
         }
 
+        [HttpGet("create/{selectedMovieId}")]
+        public IActionResult Create(int selectedMovieId)
+        {
+            var movie = _movieService.GetMovie(selectedMovieId);
+            var movieList = new List<Movie>();
+            movieList.Add(movie);
+
+            // Create a View Model object to pass
+            ReviewViewModel reviewViewModel = new ReviewViewModel()
+            {
+                // Pass the list of movies as SelectListItem
+                Movies = new SelectList(movieList, "movieID", "title"),
+                Comment = ""
+            };
+
+            return View(reviewViewModel);
+        }
+
+
         [HttpGet]
         public IActionResult ConfirmDelete(int id)
         {
@@ -108,6 +127,62 @@ namespace MovieDB.Controllers
                 _reviewService.DeleteReview(id);
             }
             return RedirectToAction("Index");
+        }
+
+
+        [HttpGet]
+        public IActionResult Update(int id)
+        {
+            var review = _reviewService.GetReview(id);
+           
+            if (review == null)
+            {
+                return NotFound();
+            }
+            var reviewUpdateViewModel = new ReviewUpdateViewModel
+            {
+                ReviewId = review.ReviewId,
+                MovieName = review.MovieName,
+                movieID = review.movieID,
+                Star = review.Star,
+                Comment = review.Comment
+            };
+
+            return View(reviewUpdateViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Update(ReviewUpdateViewModel reviewUpdateViewModel)
+        {
+            var movie = _movieService.GetMovie(reviewUpdateViewModel.movieID);
+
+            var review = new Review
+            {
+                ReviewId = reviewUpdateViewModel.ReviewId,
+                MovieName = reviewUpdateViewModel.MovieName,
+                movieID = reviewUpdateViewModel.movieID,
+                Star = reviewUpdateViewModel.Star,
+                Comment = reviewUpdateViewModel.Comment,
+                Movie = movie
+            };
+
+            if (ModelState.IsValid)
+            {
+                
+                _reviewService.UpdateReview(review);
+                return RedirectToAction("Index");
+            }
+
+            reviewUpdateViewModel = new ReviewUpdateViewModel
+            {
+                ReviewId = review.ReviewId,
+                MovieName = review.MovieName,
+                movieID = review.movieID,
+                Star = review.Star,
+                Comment = review.Comment
+            };
+
+            return View(reviewUpdateViewModel);
         }
     }
 }
