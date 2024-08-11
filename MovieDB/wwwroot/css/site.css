@@ -17,11 +17,13 @@ html {
   min-height: 100%;
 }
 
+header {
+    margin-bottom: 50px;
+}
+
 body {
-    margin-bottom: 60px;
-    font-family: 'Fredoka One', cursive, sans-serif;
-    color: #fff;
-    background-image: url('https://images.unsplash.com/photo-1681759245390-5985d444c4fd?q=80&w=2727&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    margin: 60px 0;
+    background-image: url('https://images.unsplash.com/photo-1640725633496-96aec00d1ab2?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
