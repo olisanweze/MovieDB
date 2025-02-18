@@ -31,11 +31,7 @@ namespace MovieDB.DAL
                 .IsRequired();
 
             modelBuilder.Entity<Movie>()
-                .Property(m => m.rating)
-                .HasDefaultValue(0);
-
-            modelBuilder.Entity<Movie>()
-                .Property(m => m.plot)
+                .Property(m => m.description)
                 .HasMaxLength(2000);
 
             modelBuilder.Entity<Movie>()

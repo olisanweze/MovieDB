@@ -19,17 +19,8 @@ namespace MovieDB.Models
      //   [StringLength(200, ErrorMessage = "Genre cannot be longer than 200 characters.")]
      //   public string genre { get; set; }
 
-        [Range(0, 10, ErrorMessage = "Rating must be between 0 and 10.")]
-        public double rating { get; set; }
-
-    //    [StringLength(200, ErrorMessage = "Director name cannot be longer than 200 characters.")]
-     //   public string? director { get; set; }
-
-      //  [StringLength(200, ErrorMessage = "Actor cannot be longer than 200 characters.")]
-     //   public string? actors { get; set; }
-
         [StringLength(2000, ErrorMessage = "Plot cannot be longer than 2000 characters.")]
-        public string? plot { get; set; }
+        public string? description { get; set; }
 
         [Url(ErrorMessage = "Invalid poster URL.")]
         public string? poster { get; set; }

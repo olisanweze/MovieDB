@@ -238,18 +238,13 @@ namespace MovieDB.DAL.Migrations
                     b.Property<int?>("MoviePlayListPlayListId")
                         .HasColumnType("int");
 
-                    b.Property<string>("plot")
+                    b.Property<string>("description")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("poster")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
-
-                    b.Property<double>("rating")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(0.0);
 
                     b.Property<string>("title")
                         .IsRequired()
@@ -263,7 +258,7 @@ namespace MovieDB.DAL.Migrations
 
                     b.HasIndex("MoviePlayListPlayListId", "MoviePlayListMovieId");
 
-                    b.ToTable("Movies", (string)null);
+                    b.ToTable("Movies");
                 });
 
             modelBuilder.Entity("MovieDB.Models.MoviePlayList", b =>
@@ -288,7 +283,7 @@ namespace MovieDB.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("MoviePlayLists", (string)null);
+                    b.ToTable("MoviePlayLists");
                 });
 
             modelBuilder.Entity("MovieDB.Models.PlayList", b =>
@@ -309,7 +304,7 @@ namespace MovieDB.DAL.Migrations
 
                     b.HasKey("PlayListId");
 
-                    b.ToTable("PlayLists", (string)null);
+                    b.ToTable("PlayLists");
                 });
 
             modelBuilder.Entity("MovieDB.Models.Review", b =>
@@ -341,7 +336,7 @@ namespace MovieDB.DAL.Migrations
 
                     b.HasIndex("movieID");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("MovieDB.Models.User", b =>
@@ -377,7 +372,7 @@ namespace MovieDB.DAL.Migrations
 
                     b.HasIndex("MoviePlayListPlayListId", "MoviePlayListMovieId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -21,16 +21,22 @@ namespace MovieDB.Controllers
         private async Task<Movie> GetMovieAsync()
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync("https://freetestapi.com/api/v1/movies");
-            response.EnsureSuccessStatusCode();
+            var apiResponse = await client.GetAsync("https://api.andrespecht.dev/movies");
 
-            var productJson = await response.Content.ReadAsStringAsync();
-            var movies = JsonSerializer.Deserialize<List<Movie>>(productJson);
+            apiResponse.EnsureSuccessStatusCode();
 
-            // Select a random movie
-            var random = new Random();
-            var randomIndex = random.Next(movies.Count);
-            return movies[randomIndex];
+            var responseContent = await apiResponse.Content.ReadAsStringAsync();
+            var apiResult = JsonSerializer.Deserialize<APIResponse>(responseContent);
+            if (apiResult != null && apiResult.success && apiResult.response != null && apiResult.response.Count > 0)
+            {
+                // Select a random movie from the response
+                var random = new Random();
+                var randomIndex = random.Next(apiResult.response.Count);
+                return apiResult.response[randomIndex];
+            }
+
+            // Return null if the API call was unsuccessful or if no movies were found
+            return null;
         }
 
         public IActionResult Index()
@@ -49,10 +55,7 @@ namespace MovieDB.Controllers
                 title = movieFromAPI.title,
                 year = movieFromAPI.year,
             //    genre = movieFromAPI.genre,
-                rating = movieFromAPI.rating,
-             //   director = movieFromAPI.director,
-              //  actors = movieFromAPI.actors,
-                plot = movieFromAPI.plot,
+                description = movieFromAPI.description,
                 poster = movieFromAPI.poster
             };
 
