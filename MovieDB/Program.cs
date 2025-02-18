@@ -31,6 +31,9 @@ namespace MovieDB
             builder.Services.AddScoped<MoviePlayListDAL>();
             builder.Services.AddScoped<PlayListService>();
             builder.Services.AddScoped<PlayListDAL>();
+            builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<UserDAL>();
+
             //register DAL and BLL services
             builder.Services.AddScoped<MovieDAL>();
             builder.Services.AddScoped<MovieService>();

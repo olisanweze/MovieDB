@@ -26,4 +26,8 @@
     <ProjectReference Include="..\MovieDB.Models\MovieDB.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Identity\Data\" />
+  </ItemGroup>
+
 </Project>

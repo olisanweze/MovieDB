@@ -22,8 +22,8 @@
             <tr>
                 <td>@movie.title</td>
                 <td>@movie.year</td>
-                <td>@movie.plot</td>
-                <td>@movie.poster</td>
+                <td>@movie.description</td>
+                <td><img src="@movie.poster" alt="Movie Poster" class="movie-poster"/></td>
                 <td>
                     <a class="btn btn-danger" href="@Url.Action("ConfirmDelete", new { id = movie.movieID })">Delete</a>
                     <a class="btn btn-primary" href="@Url.Action("Create", "Review", new { selectedMovieId = movie.movieID })">Review</a>
